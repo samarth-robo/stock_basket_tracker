@@ -2,10 +2,13 @@
 
 Simple tool that allows you to track the price of a weighted basket of stocks.
 
+|![teaser](teaser.png)|
+-
+
 ## Setup
 - Get [Miniconda](https://docs.conda.io/en/latest/miniconda.html). Then:
 ```bash
-(base) $ git clone git@github.com:samarth-robo/stock_basket_tracker.git
+(base) $ git clone https://github.com/samarth-robo/stock_basket_tracker.git
 (base) $ cd stock_basket_tracker 
 (base) $ conda env create -f environment.yml
 (base) $ conda activate stock_basket_tracker
@@ -45,6 +48,4 @@ Dash is running on http://127.0.0.1:8050/
  * Running on http://127.0.0.1:8050/ (Press CTRL+C to quit)
 ```
 
-The app will be live at [http://localhost:8050](http://localhost:8050). 
-
-![teaser](teaser.png)
+The app will be live at [http://localhost:8050](http://localhost:8050).
