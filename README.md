@@ -2,8 +2,7 @@
 
 Simple tool that allows you to track the price of a weighted basket of stocks.
 
-|![teaser](teaser.png)|
--
+![teaser](teaser.png)
 
 ## Setup
 - Get [Miniconda](https://docs.conda.io/en/latest/miniconda.html). Then:
@@ -49,3 +48,18 @@ Dash is running on http://127.0.0.1:8050/
 ```
 
 The app will be live at [http://localhost:8050](http://localhost:8050).
+
+# Basket Specification
+
+It is a simple JSON file containing ticker names and fractions or numbers of
+shares (the latter will be normalized):
+
+```
+{
+    "MSFT": 3,
+    "AAPL": 4,
+    "NVDA": 5,
+    "VOO": 0
+}
+```
+You can set the fraction 0 to include a ticker for reference (e.g. `VOO` above).
