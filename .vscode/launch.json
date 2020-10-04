@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "show_app",
+            "type": "python",
+            "request": "launch",
+            "program": "show_history.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-f", "${input:filename}",
+            ]
+        },
+    ],
+    "inputs": [
+        {
+            "id": "filename",
+            "default": "basket.json",
+            "description": "Filename containing ticker names",
+            "type": "promptString",
+        },
+    ]
+}

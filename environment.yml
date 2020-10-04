@@ -1,0 +1,15 @@
+name: stock_basket_tracker
+
+channels:
+  - plotly
+
+dependencies:
+  - numpy
+  - python=3
+  - plotly
+  - ipython
+  - matplotlib
+  - pip
+  - pip:
+    - yfinance
+    - dash
