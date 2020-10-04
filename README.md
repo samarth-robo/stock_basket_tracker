@@ -16,16 +16,18 @@ Simple tool that allows you to track the price of a weighted basket of stocks.
 # Run the App
 
 The app has a simple interface. Supply a JSON with a dict of ticker names and
-weights.
+weights, and (optionally) start and end dates.
 
 ```bash
 (stock_basket_tracker) $ python show_history.py --help
-usage: show_history.py [-h] -f TICKER_NAMES_FILE [--start_year START_YEAR]
+usage: show_history.py [-h] -f TICKER_NAMES_FILE [--start_date START_DATE] [--end_date END_DATE]
 
 optional arguments:
   -h, --help            show this help message and exit
   -f TICKER_NAMES_FILE, --ticker_names_file TICKER_NAMES_FILE
-  --start_year START_YEAR
+  --start_date START_DATE
+                        YYYY-MM-DD
+  --end_date END_DATE   Default today
 ```
 
 Run it with an example basket that is included:
