@@ -1,6 +1,7 @@
 # Stock Basket Tracker
 
 Simple tool that allows you to track the price of a weighted basket of stocks.
+Gets stock price data from [Yahoo finance](https://pypi.org/project/yfinance/).
 
 ![teaser](teaser.png)
 
