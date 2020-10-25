@@ -18,7 +18,7 @@
     "inputs": [
         {
             "id": "filename",
-            "default": "basket.json",
+            "default": "example_basket.json",
             "description": "Filename containing ticker names",
             "type": "promptString",
         },

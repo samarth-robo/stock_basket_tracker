@@ -48,11 +48,13 @@ Dash is running on http://127.0.0.1:8050/
 ```
 
 The app will be live at [http://localhost:8050](http://localhost:8050).
+The graph is *interactive*, hover over it and use the bottons in the top-right
+corner.
 
 # Basket Specification
 
-It is a simple JSON file containing ticker names and fractions or numbers of
-shares (the latter will be normalized):
+It is a simple JSON file containing ticker names and numbers of shares in the 
+basket:
 
 ```
 {
@@ -62,4 +64,4 @@ shares (the latter will be normalized):
     "VOO": 0
 }
 ```
-You can set the fraction 0 to include a ticker for reference (e.g. `VOO` above).
+You can set the number 0 to include a ticker for reference (e.g. `VOO` above).

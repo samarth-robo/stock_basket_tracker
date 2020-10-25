@@ -19,10 +19,23 @@ class Stock(object):
     self.vis_kwargs = {'mode': 'lines',
                        'line': {'width': 1,}}
 
-  # def get_data(self):
-  #   print('Getting {:s} data'.format(self.name))
-  #   self.times = np.asarray(list(range(10)))
-  #   self.prices = np.random.uniform(0, 100, len(self.times))
+  def get_data(self):
+    print('Getting {:s} data'.format(self.name))
+    self.times = np.asarray(list(range(10)))
+    self.prices = np.random.uniform(0, 100, len(self.times))
+
+  def basket_contribution(self, n, basket):
+    contribs = np.zeros(len(self.prices))
+    i0 = np.searchsorted(self.times, basket.times[0])
+    assert(i0 >= 0)
+    i1 = np.searchsorted(self.times, basket.times[-1])
+    assert(i1 < len(self.times))
+    contribs[i0:i1+1] = n*self.prices[i0:i1+1] / basket.prices
+    return 100.0 * contribs
+
+  @property
+  def yields(self):
+    return self.prices / self.prices[0]
 
 
 class BasketTracker(object):
@@ -37,13 +50,10 @@ class BasketTracker(object):
       d = json.load(f)
 
     names = []
-    fracs = []
+    self.n_shares = []
     for n,f in d.items():
       names.append(n)
-      fracs.append(float(f))
-    if abs(np.sum(fracs) - 1.0) > 0.1:
-      print('Normalizing basket fractions')
-    self.fracs = np.asarray(fracs) / np.sum(fracs)
+      self.n_shares.append(int(f))
     self.stocks = [Stock(n) for n in names]
     self.dates = []
     self._get_data()
@@ -78,12 +88,12 @@ class BasketTracker(object):
     end_time   = np.min([s.times[-1] for s in self.stocks])
     b.times = np.asarray(list(range(start_time, end_time+1)))
     ps = []
-    for s, f in zip(self.stocks, self.fracs):
+    for s, n in zip(self.stocks, self.n_shares):
       i0 = np.searchsorted(s.times, start_time)
       assert(i0 > 0 or start_time==s.times[0])
       i1 = np.searchsorted(s.times, end_time)
       assert(i1 < len(s.times))
-      ps.append(f * s.prices[i0:i1+1])
+      ps.append(n * s.prices[i0:i1+1])
     b.prices = np.sum(np.vstack(ps), axis=0)
     b.vis_kwargs['line']['width'] = 4
     return b
@@ -103,15 +113,23 @@ class BasketTracker(object):
   
   def show(self):
     self.fig.data = []
-    stocks = self.stocks + [self._calc_basket()]
-    for idx, s in enumerate(stocks):
+    basket = self._calc_basket()
+    for s, n in zip(self.stocks+[basket], self.n_shares+[1]):
       if not s.vis:
         continue
       name = s.name
-      if name != 'basket':
-        name += ' ({:.1f})'.format(100.0*self.fracs[idx])
       x = [self.dates[t] for t in s.times]
-      self.fig.add_trace(go.Scatter(x=x, y=s.prices, name=name, **s.vis_kwargs))
+      self.fig.add_trace(go.Scatter(
+        x=x,
+        y=100.0*s.yields,
+        name=name,
+        text=[name for _ in range(len(x))],
+        customdata=np.vstack((s.prices, s.basket_contribution(n, basket))).T,
+        hovertemplate='<b>%{text}: %{y:.1f}%</b>, '+
+                      '$%{customdata[0]:.1f}, '+
+                      '%{customdata[1]:.1f}% of basket'+
+                      '<extra></extra>',
+        **s.vis_kwargs))
     tick_times, tick_dates = self._segment_dates()
     self.fig.update_layout(
       xaxis = dict(
@@ -126,9 +144,9 @@ class BasketTracker(object):
         y=1.02,
         orientation='h',
       ),
-      title='Closing Price History from {:s} to {:s}'.format(self.start_date, self.end_date),
+      title='Yields relative to start date, prices, and basket portions. {:s} to {:s}'.format(self.start_date, self.end_date),
       xaxis_title='Date',
-      yaxis_title='Price (USD)'
+      yaxis_title='Yield (%)'
     )
     start_app(self.fig)
 
@@ -137,8 +155,8 @@ if __name__ == '__main__':
   import argparse
   parser = argparse.ArgumentParser()
   parser.add_argument('-f', '--ticker_names_file', required=True)
-  parser.add_argument('--start_date', default='2015-01-01')
-  parser.add_argument('--end_date', default=None)
+  parser.add_argument('--start_date', default='2015-01-01', help='YYYY-MM-DD')
+  parser.add_argument('--end_date', default=None, help='Default today')
   args = parser.parse_args()
 
   bt = BasketTracker(args.ticker_names_file, args.start_date, args.end_date)
